@@ -163,6 +163,8 @@ const SGshopDetails = () => {
 
                 .main-extension-spicegems .tab-content-spicegems td {
                     padding: 10px 0px;
+                    color: #ffffff;
+                    font-size: 14px;
                 }
 
                 .main-extension-spicegems .tab-content-spicegems td:not(.evi-details_spicegems) {
@@ -347,6 +349,7 @@ const SGshopDetails = () => {
                     height: unset;
                     line-height: unset;
                     background-color: unset;
+                    border: unset;
                   }
 
                 .file-picker-container--spicegems input[type="file"] {
