@@ -556,7 +556,57 @@ const SGshopDetails = () => {
             });
 
             $(".tab-spicegems.details-spicegems").trigger("click");
-            // self.setDraggable();
+            self.setDraggable();
+        },
+
+        updateProductLinks: async (filterType, productsWithVariants, productsWithColorOption, productsWithCommonImages) => {
+            if (!$(".products-spicegems").hasClass("active-spicegems")) return;
+            let filteredHtml = "";
+            if (filterType === "variants") {
+                const productWithVariantHtml = productsWithVariants?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
+                filteredHtml = `<div class="product-links--variant_spicegems"><div>Variant Wise Images: ${productsWithVariants?.length}</div><div class="links-spicegems">${productWithVariantHtml}</div></div>`;
+            } else if (filterType === "colors") {
+                const productWithColorOptionsHtml = productsWithColorOption?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
+                filteredHtml = `<div class="product-links--color_spicegems"><div>Color Options: ${productsWithColorOption?.length}</div><div class="links-spicegems">${productWithColorOptionsHtml}</div></div>`;
+            } else if (filterType === "commonImages") {
+                const productWithCommonImagesHtml = productsWithCommonImages?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
+                filteredHtml = `<div class="product-links--commonImage_spicegems"><div>Products with common images: ${productsWithCommonImages?.length}</div><div class="links-spicegems">${productWithCommonImagesHtml}</div></div>`;
+            } else if (filterType === "video") {
+                $(".tab-content-spicegems").html(self.loadingSpinner());
+                const productWithVideo = await self.getProductsWithVideo();
+                const productWithVideoHtml = productWithVideo?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
+                filteredHtml = `<div class="product-links--video_spicegems"><div>Products with with video: ${productWithVideo?.length}</div><div class="links-spicegems">${productWithVideoHtml}</div></div>`;
+            }
+
+            $(".tab-content-spicegems").html(filteredHtml);
+        },
+
+        generateDetailsTable: () => {
+            return `<table style="width: 100%">
+                <tr><td>Name</td><td class="evi-details_spicegems"><p>${shopName}</p><span class="hidden-spicegems">#copied</span></td></tr>
+                <tr><td>Theme</td><td class="evi-details_spicegems"><p>${userTheme} V(${userThemeVersion})</p><span class="hidden-spicegems">#copied</span></td></tr>
+                <tr><td>Script</td><td class="evi-details_spicegems"><p>${currentScript}</p><span class="hidden-spicegems">#copied</span></td></tr>
+                <tr><td>App Enabled</td><td class="evi-details_spicegems"><p>${isAppPresent ? "On" : "Off"}</p><span class="hidden-spicegems">#copied</span></td></tr>
+                ${
+                    isAppPresent
+                        ? `<tr><td>EVI tag</td><td class="evi-details_spicegems"><p>${eviTag || "Not Available"}</p><span class="hidden-spicegems">#copied</span></td></tr>
+                <tr><td>evi_tagshoworno</td><td class="evi-details_spicegems"><p>${eviShowOrNo ? "Available" : "Not Available"}</p><span class="hidden-spicegems">#copied</span></td></tr>`
+                        : ""
+                }
+            </table>`;
+        },
+
+        filePickerHtml: () => {
+            return `<div class="file-picker-container--spicegems">
+                        <input type="file" id="filePicker-spicegems" />
+                        <button id="executeFile-spicegems" style="padding: 5px 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Execute</button>
+                    </div>`;
+        },
+
+        loadingSpinner: () => {
+            return `<div style="width: 100%; display: flex; align-items: center; justify-content: center;">
+                        <img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" style="width: 30px; height: 30px;"/>
+                    </div>`;
         },
 
         updateProductLinks: async (filterType, productsWithVariants, productsWithColorOption, productsWithCommonImages) => {
@@ -650,7 +700,10 @@ const SGshopDetails = () => {
             object.addEventListener(
                 "mousedown",
                 function (e) {
-                    e.preventDefault();
+                    if (e.target.tagName !== "SELECT") {
+                        e.preventDefault();
+                    }
+                    // e.preventDefault();
                     initX = this.offsetLeft;
                     initY = this.offsetTop;
                     firstX = e.pageX;
