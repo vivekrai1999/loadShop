@@ -104,296 +104,279 @@ const SGshopDetails = () => {
             }
 
             $("head").append(`<style>
+                .store-data--extension_button-spicegems {
+                    all: unset;
+                    height: 45px;
+                    width: 50px;
+                    background-color: #444;
+                    position: fixed;
+                    z-index: 99999999;
+                    border-radius: 10px 0px 0px 10px;  
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+                    right: -15px;
+                    top: 50%;
+                    display: flex;
+                    transition: all linear 0.2s;           
+                    
+                }
 
-        
-            .store-data--extension_button-spicegems {
-                all: unset;
-                height: 45px;
-                width: 50px;
-                background-color: #444;
-                position: fixed;
-                z-index: 99999999;
-                border-radius: 10px 0px 0px 10px;  
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-                right: -15px;
-                top: 50%;
-                display: flex;
-                transition: all linear 0.2s;           
-                
-            }
+                .store-data--extension_button-spicegems:hover {
+                    right: 0px;
+                }
 
-            .store-data--extension_button-spicegems:hover {
-                right: 0px;
-            }
+                .expand-button-icon--spicegems {
+                    width: 15px;
+                    background-color: #fff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
 
-            .expand-button-icon--spicegems {
-                width: 15px;
-                background-color: #fff;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .main-button-icon--spicegems {
-                width: 35px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-        
-            .main-extension-spicegems {
-                font-family: system-ui;
-                min-width: 150px;
-                width: 50%;
-                max-width: 460px;
-                height: 380px;
-                background-color: #000;
-                position: fixed;
-                z-index: 99999999;
-                right: 10px;
-                top: 50px;
-                border-radius: 10px;
-                padding: 25px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-                opacity: 0.8;
-                font-size: 14px;
-                cursor: grab;
-            }
+                .main-button-icon--spicegems {
+                    width: 35px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
             
-            .main-extension--container-spicegems {  
-                height: 100%;  
-                display: grid;
-                grid-auto-rows: 40px 30px 1fr;
-            }
+                .main-extension-spicegems {
+                    font-family: system-ui;
+                    min-width: 150px;
+                    width: 50%;
+                    max-width: 460px;
+                    height: 380px;
+                    background-color: #000;
+                    position: fixed;
+                    z-index: 99999999;
+                    right: 10px;
+                    top: 50px;
+                    border-radius: 10px;
+                    padding: 25px;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+                    opacity: 0.8;
+                    font-size: 14px;
+                    cursor: grab;
+                }
+                
+                .main-extension--container-spicegems {  
+                    height: 100%;  
+                    display: grid;
+                    grid-auto-rows: 40px 30px 1fr;
+                }
 
-            .main-extension-spicegems p{
-                all:unset;
-            }
+                .main-extension-spicegems p{
+                    all:unset;
+                }
 
-            .extension-close--spicegems img {
-                transition: all linear 0.2s;
-                cursor: pointer;
-            }
+                .extension-close--spicegems img {
+                    transition: all linear 0.2s;
+                    cursor: pointer;
+                }
 
-            .extension-close--spicegems img:hover {
-                transform: rotate(90deg)
-            }
+                .extension-close--spicegems img:hover {
+                    transform: rotate(90deg)
+                }
 
-            .extension-heading-spicegems {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 20px;
-            }
-        
-            .extension-heading-spicegems h1 {
-                all: unset;
-                font-size: 15px !important;
-                color: #fff;
-                text-transform: uppercase;
-                font-weight: 500;
-                letter-spacing: 4px;
-                word-spacing: 7px;
-            }
-        
-            .tab-spicegems .tab-heading-spicegems {
-                font-size: 11px !important;
-                color: #fff;
-                text-transform: uppercase;
-                font-weight: 500;
-            }
-        
-            .tab-navigation-spicegems {
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                margin-bottom: 10px;
-            }
-        
-            .tab-spicegems {
-                cursor: pointer;
-                color: #fff;
-                position: relative;
-            }
-        
-            .tab-spicegems p {
-                all: unset;
-                text-transform: uppercase;
-                color: #fff;
-                letter-spacing: 2px;
-                font-weight: 500;
-            }
-        
-            .tab-spicegems.active-spicegems p{
-                border-bottom: 2px solid #fff;
-                padding-bottom: 5px;
-            }
+                .extension-heading-spicegems {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 20px;
+                }
+            
+                .extension-heading-spicegems h1 {
+                    all: unset;
+                    font-size: 15px !important;
+                    color: #fff;
+                    text-transform: uppercase;
+                    font-weight: 500;
+                    letter-spacing: 4px;
+                    word-spacing: 7px;
+                }
+            
+                .tab-spicegems .tab-heading-spicegems {
+                    font-size: 11px !important;
+                    color: #fff;
+                    text-transform: uppercase;
+                    font-weight: 500;
+                }
+            
+                .tab-navigation-spicegems {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    margin-bottom: 10px;
+                }
+            
+                .tab-spicegems {
+                    cursor: pointer;
+                    color: #fff;
+                    position: relative;
+                }
+            
+                .tab-spicegems p {
+                    all: unset;
+                    text-transform: uppercase;
+                    color: #fff;
+                    letter-spacing: 2px;
+                    font-weight: 500;
+                }
+            
+                .tab-spicegems.active-spicegems p{
+                    border-bottom: 2px solid #fff;
+                    padding-bottom: 5px;
+                }
 
-            .details-spicegems {text-align: left}
-            .loadScript-spicegems {text-align: right}
-            .products-spicegems {text-align: center}
-        
-            .tab-content-spicegems {
-                padding-top: 10px;
-                height: 100%;
-                display: flex;
-                flex-direction: row;
-                gap: 20px;
-                color: #fff;
-            }
-        
-            .hidden-spicegems {
-                display: none !important;
-            }
-        
-            .shop-info--spicegems {
-                display: flex;
-                flex-direction: row;
-                gap:20px;
-                color: #fff;
-            }
-        
-            .tab-content-spicegems p {
-                font-size: 14px !important;
-                color: #fff;
-            }
-        
-            .tab-content-spicegems p.label-spicegems {
-                text-transform: lowercase;
-                font-size: 14px !important;
-                color: #fff;
-            }
-        
-            .left-container--spicegems {
-                display: flex;
-                flex-direction: column;
-            }
-        
-            .links-spicegems {
-                display: flex;
-                flex-direction: row;
-                gap: 10px;
-                flex-wrap: wrap;
-            }
+                .details-spicegems {text-align: left}
+                .loadScript-spicegems {text-align: right}
+                .products-spicegems {text-align: center}
+            
+                .tab-content-spicegems {
+                    padding-top: 10px;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    gap: 20px;
+                    color: #fff;
+                }
+            
+                .hidden-spicegems {
+                    display: none !important;
+                }
+            
+                .shop-info--spicegems {
+                    display: flex;
+                    flex-direction: row;
+                    gap:20px;
+                    color: #fff;
+                }
+            
+                .tab-content-spicegems p {
+                    font-size: 14px !important;
+                    color: #fff;
+                }
+            
+                .tab-content-spicegems p.label-spicegems {
+                    text-transform: lowercase;
+                    font-size: 14px !important;
+                    color: #fff;
+                }
+                    
+                .links-spicegems {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                }
 
-            .shoploadHide {
-                display: none !important;
-            }
-        
-            .product-links--variant_spicegems, .product-links--color_spicegems, .product-links--commonImage_spicegems, .product-links--video_spicegems {
-                padding-bottom: 20px;
-                height: 200px;
-                overflow-y: auto;
-            }
+                .shoploadHide {
+                    display: none !important;
+                }
+            
+                .product-links--variant_spicegems, .product-links--color_spicegems, .product-links--commonImage_spicegems, .product-links--video_spicegems {
+                    padding-bottom: 20px;
+                    height: 200px;
+                    overflow-y: auto;
+                }
 
-            .product-links--variant_spicegems, .product-links--color_spicegems, .product-links--commonImage_spicegems, .product-links--video_spicegems {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-        
-            .product-links--variant_spicegems a, .product-links--color_spicegems a, .product-links--commonImage_spicegems a, .product-links--video_spicegems a {
-                font-size: 14px !important;
-                color: #ffffff;
-                transition: all linear 0.2s;
-                background-color: #007bff;
-                padding: 2px 10px;
-                border-radius: 50px;
-                text-decoration: none !important;
-            }
-        
-            .product-links--variant_spicegems a:hover, .product-links--color_spicegems a:hover, .product-links--commonImage_spicegems a:hover, product-links--video_spicegems a:hover {
-                color: #ffffff;
-                background-color: #0056b3;
-            }
-        
-        
-            .right-container--spicegems p {
-                font-size: 14px !important;
-                color: #fff;
-            }
-        
-            .right-container--details_spicegems, .left-container--details_spicegems {
-                display: flex;
-                flex-direction: row;
-                gap: 10px;
-                align-items: center;
-                cursor: pointer;
-                height: 40px;
-            }
-        
-            .right-container--details_spicegems span {
-                background-color: #1e90ff;
-                padding-left: 5px;
-                padding-right: 5px;
-                font-size: 14px !important;
-            }
+                .product-links--variant_spicegems, .product-links--color_spicegems, .product-links--commonImage_spicegems, .product-links--video_spicegems {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                }
+            
+                .product-links--variant_spicegems a, .product-links--color_spicegems a, .product-links--commonImage_spicegems a, .product-links--video_spicegems a {
+                    font-size: 14px !important;
+                    color: #ffffff;
+                    transition: all linear 0.2s;
+                    background-color: #007bff;
+                    padding: 2px 10px;
+                    border-radius: 50px;
+                    text-decoration: none !important;
+                }
+            
+                .product-links--variant_spicegems a:hover, .product-links--color_spicegems a:hover, .product-links--commonImage_spicegems a:hover, product-links--video_spicegems a:hover {
+                    color: #ffffff;
+                    background-color: #0056b3;
+                }
 
-            .file-picker-container--spicegems{
-                display: flex;
-                width: 100%;
-                justify-content: space-between;
+                .evi-details_spicegems {
+                    font-size: 14px !important;
+                    color: #fff;
+                    cursor: pointer; 
+                }
+            
+                .evi-details_spicegems span {
+                    background-color: #1e90ff;
+                    padding-left: 5px;
+                    padding-right: 5px;
+                    font-size: 14px !important;
+                    margin-left: 5px;
+                }
 
-            }
+                .file-picker-container--spicegems{
+                    display: flex;
+                    width: 100%;
+                    justify-content: space-between;
 
-            .file-picker-container--spicegems input[type="file"] {
-                color: unset;
-                margin: unset;
-                padding: unset;
-                height: unset;
-                line-height: unset;
-                background-color: unset;
-              }
+                }
 
-            .file-picker-container--spicegems input[type="file"] {
-              position: relative;
-            }
+                .file-picker-container--spicegems input[type="file"] {
+                    color: unset;
+                    margin: unset;
+                    padding: unset;
+                    height: unset;
+                    line-height: unset;
+                    background-color: unset;
+                  }
 
-            .file-picker-container--spicegems input[type="file"]::file-selector-button {
-              width: 136px;
-              color: transparent;
-            }
+                .file-picker-container--spicegems input[type="file"] {
+                  position: relative;
+                }
 
-            .file-picker-container--spicegems input[type="file"]::before {
-              position: absolute;
-              pointer-events: none;
-              top: 10px;
-              left: 16px;
-              height: 20px;
-              width: 20px;
-              content: "";
-              background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230964B0'%3E%3Cpath d='M18 15v3H6v-3H4v3c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-3h-2zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5-5 5z'/%3E%3C/svg%3E");
-            }
+                .file-picker-container--spicegems input[type="file"]::file-selector-button {
+                  width: 136px;
+                  color: transparent;
+                }
 
-            .file-picker-container--spicegems input[type="file"]::after {
-              position: absolute;
-              pointer-events: none;
-              top: 11px;
-              left: 40px;
-              color: #0964b0;
-              content: "Upload File";
-            }
+                .file-picker-container--spicegems input[type="file"]::before {
+                  position: absolute;
+                  pointer-events: none;
+                  top: 10px;
+                  left: 16px;
+                  height: 20px;
+                  width: 20px;
+                  content: "";
+                  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230964B0'%3E%3Cpath d='M18 15v3H6v-3H4v3c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-3h-2zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5-5 5z'/%3E%3C/svg%3E");
+                }
 
-        
+                .file-picker-container--spicegems input[type="file"]::after {
+                  position: absolute;
+                  pointer-events: none;
+                  top: 11px;
+                  left: 40px;
+                  color: #0964b0;
+                  content: "Upload File";
+                }
 
-            .file-picker-container--spicegems input[type="file"]::file-selector-button {
-              border-radius: 4px;
-              padding: 0 16px;
-              height: 40px;
-              cursor: pointer;
-              background-color: white;
-              border: 1px solid rgba(0, 0, 0, 0.16);
-              box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.05);
-              margin-right: 16px;
-              transition: background-color 200ms;
-            }
+                .file-picker-container--spicegems input[type="file"]::file-selector-button {
+                  border-radius: 4px;
+                  padding: 0 16px;
+                  height: 40px;
+                  cursor: pointer;
+                  background-color: white;
+                  border: 1px solid rgba(0, 0, 0, 0.16);
+                  box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.05);
+                  margin-right: 16px;
+                  transition: background-color 200ms;
+                }
 
-            .file-picker-container--spicegems input[type="file"]::file-selector-button:hover {
-              background-color: #f3f4f6;
-            }
+                .file-picker-container--spicegems input[type="file"]::file-selector-button:hover {
+                  background-color: #f3f4f6;
+                }
 
-            .file-picker-container--spicegems input[type="file"]::file-selector-button:active {
-              background-color: #e5e7eb;
-            }
-                        </style>`);
+                .file-picker-container--spicegems input[type="file"]::file-selector-button:active {
+                  background-color: #e5e7eb;
+                }
+            </style>`);
 
             $("body").append(`
                 <div class="store-data--extension-spicegems">
@@ -422,9 +405,7 @@ const SGshopDetails = () => {
                                 <option value="commonImages">Products with Common Images</option>
                                 <option value="video">Products with Video</option>
                             </select>
-                            <div class="tab-content-spicegems">
-                                
-                            </div>
+                            <div class="tab-content-spicegems"></div>
                         </div>
                     </div>
                 </div>
@@ -448,72 +429,40 @@ const SGshopDetails = () => {
 
                 if ($(e.currentTarget).hasClass("details-spicegems")) {
                     $("#productFilter").addClass("shoploadHide");
-                    $(".tab-content-spicegems").css({
-                        "flex-direction": "row",
-                    });
-
-                    const details = `<div class="left-container--spicegems">
-                                        <div class="left-container--details_spicegems"><p class="label-spicegems">Name</p></div>
-                                        <div class="left-container--details_spicegems"><p class="label-spicegems">theme</p></div>
-                                        <div class="left-container--details_spicegems"><p class="label-spicegems">Script</p></div>
-                                        <div class="left-container--details_spicegems"><p class="label-spicegems">App Enabled</p></div>
-                                        ${
-                                            isAppPresent
-                                                ? `
-                                                    <div class="left-container--details_spicegems">
-                                                        <p class="label-spicegems">evi Tag</p>
-                                                    </div>
-                                                    <div class="left-container--details_spicegems">
-                                                        <p class="label-spicegems">evi_showorno Tag</p>
-                                                    </div>
-                                                
-                                                    `
-                                                : ""
-                                        }
-
-
-                                    </div>
-                                    <div class="right-container--spicegems">
-                                        <div class="right-container--details_spicegems">
-                                            <div><p>${shopName}</p></div>
-                                            <span class="hidden-spicegems">#copied</span>
-                                        </div>
-                                        <div class="right-container--details_spicegems">
-                                            <div><p>${userTheme} V(${userThemeVersion})</p></div>                                    
-                                            <span class="hidden-spicegems">#copied</span>
-                                        </div>
-                                        <div class="right-container--details_spicegems">
-                                            <div><p>${currentScript}</p></div>
-                                            <span class="hidden-spicegems">#copied</span>
-                                        </div>
-                                        <div class="right-container--details_spicegems">
-                                            <div><p>${isAppPresent ? "On" : "Off"}</p></div>
-                                            <span class="hidden-spicegems">#copied</span>
-                                        </div>
-                                        ${
-                                            isAppPresent
-                                                ? `
-                                                    <div class="right-container--details_spicegems">
-                                                            <div><p>${eviTag ? eviTag : "Not Available"}</p></div>
-                                                            <span class="hidden-spicegems">#copied</span>
-                                                        </div>
-                                                    <div class="right-container--details_spicegems">
-                                                        <div><p>${eviShowOrNo ? "Available" : "Not Available"}</p></div>
-                                                        <span class="hidden-spicegems">#copied</span>
-                                                    </div>
-                                                    `
-                                                : ""
-                                        }
-                                        
-                                        
-                                    </div>`;
-
+                    const details = `<table cellPadding="5px" style="width: 100%">
+                         <tr>
+                            <td>Name</td>
+                            <td class="evi-details_spicegems"><p>${shopName}</p><span class="hidden-spicegems">#copied</span></td>
+                         </tr>
+                          <tr>
+                            <td>Theme</td>
+                            <td class="evi-details_spicegems"><p>${userTheme} V(${userThemeVersion})</p><span class="hidden-spicegems">#copied</span></td>
+                         </tr>
+                          <tr>
+                            <td>Script</td>
+                            <td class="evi-details_spicegems"><p>${currentScript}</p><span class="hidden-spicegems">#copied</span></td>
+                         </tr>
+                         <tr>
+                            <td>App Enabled</td>
+                            <td class="evi-details_spicegems"><p>${isAppPresent ? "On" : "Off"}</p><span class="hidden-spicegems">#copied</span></td>
+                         </tr>
+                         ${
+                             isAppPresent
+                                 ? `<tr><td>EVI tag</td><td class="evi-details_spicegems"><p>${
+                                       eviTag ? eviTag : "Not Available"
+                                   }</p><span class="hidden-spicegems">#copied</span></td></tr><tr><td>evi_tagshoworno tag</td><td class="evi-details_spicegems"><p>${
+                                       eviShowOrNo ? "Available" : "Not Available"
+                                   }</p><span class="hidden-spicegems">#copied</span></td></tr>`
+                                 : ""
+                         }
+                         
+                    </table>`;
                     $(".tab-content-spicegems").html(details);
 
-                    $(".right-container--spicegems p").on("click", (e) => {
+                    $(".evi-details_spicegems p").on("click", (e) => {
                         self.copyToClipboard(e.currentTarget);
-                        $(".right-container--details_spicegems span").addClass("hidden-spicegems");
-                        const success = e.currentTarget.closest(".right-container--details_spicegems").querySelector("span");
+                        $(".evi-details_spicegems span").addClass("hidden-spicegems");
+                        const success = e.currentTarget.closest(".evi-details_spicegems").querySelector("span");
                         if (success) {
                             $(success).removeClass("hidden-spicegems");
                         }
@@ -528,11 +477,8 @@ const SGshopDetails = () => {
 
                     const { productsWithVariants, productsWithColorOption, productsWithCommonImages } = await self.getEviVariables();
 
-                    $(".tab-content-spicegems").css({
-                        "flex-direction": "column",
-                    });
-
                     const updateProductLinks = async (filterType) => {
+                        if (!$(".products-spicegems").hasClass("active-spicegems")) return;
                         let filteredHtml = "";
                         if (filterType === "variants") {
                             const productWithVariantHtml = productsWithVariants?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
