@@ -556,7 +556,7 @@ const SGshopDetails = () => {
             });
 
             $(".tab-spicegems.details-spicegems").trigger("click");
-            // self.setDraggable();
+            self.setDraggable();
         },
 
         updateProductLinks: async (filterType, productsWithVariants, productsWithColorOption, productsWithCommonImages) => {
@@ -639,7 +639,6 @@ const SGshopDetails = () => {
             $temp.remove();
         },
 
-        // breaks the html select element - not in use currently
         setDraggable: () => {
             var object = document.querySelector(".main-extension-spicegems"),
                 initX,
@@ -650,7 +649,9 @@ const SGshopDetails = () => {
             object.addEventListener(
                 "mousedown",
                 function (e) {
-                    e.preventDefault();
+                    if (e.target.tagName !== "SELECT") {
+                        e.preventDefault();
+                    }
                     initX = this.offsetLeft;
                     initY = this.offsetTop;
                     firstX = e.pageX;
