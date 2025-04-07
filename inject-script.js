@@ -57,7 +57,7 @@ const SGshopDetails = () => {
             }
         },
 
-        getEviVariables: async (signal) => {
+        getEviVariables: async () => {
             try {
                 const allProducts = await self.getAllProducts();
                 const productsWithVariants = allProducts.filter(({ variants, images }) => variants.length > 1 && images.some(({ variant_ids }) => variant_ids.length !== 0));
@@ -92,6 +92,32 @@ const SGshopDetails = () => {
                 return null;
             } catch (error) {
                 console.error("Error fetching product video:", error);
+                return null;
+            }
+        },
+
+        getProductsWithTemplate: async () => {
+            try {
+                const { productsWithVariants } = await self.getEviVariables();
+                const productWithTemplate = await Promise.all(productsWithVariants.map(self.checkTemplateProduct));
+                const filteredTemplate = productWithTemplate.filter((product) => product !== null);
+                return filteredTemplate;
+            } catch (error) {
+                console.error("Error fetching products with template", error);
+                throw error;
+            }
+        },
+
+        checkTemplateProduct: async (product) => {
+            try {
+                const response = await fetch(`/products/${product.handle}.json`);
+                const data = await response.json();
+                if (data?.product?.template_suffix !== null && data?.product?.template_suffix.trim() !== "") {
+                    return product;
+                }
+                return null;
+            } catch (error) {
+                console.error("Error fetching product template:", error);
                 return null;
             }
         },
@@ -294,19 +320,19 @@ const SGshopDetails = () => {
                     display: none !important;
                 }
             
-                .product-links--variant_spicegems, .product-links--color_spicegems, .product-links--commonImage_spicegems, .product-links--video_spicegems {
+                .product-links--variant_spicegems, .product-links--color_spicegems, .product-links--commonImage_spicegems, .product-links--template_spicegems, .product-links--video_spicegems {
                     padding-bottom: 20px;
                     height: 200px;
                     overflow-y: auto;
                 }
 
-                .product-links--variant_spicegems, .product-links--color_spicegems, .product-links--commonImage_spicegems, .product-links--video_spicegems {
+                .product-links--variant_spicegems, .product-links--color_spicegems, .product-links--commonImage_spicegems, .product-links--template_spicegems, .product-links--video_spicegems {
                     display: flex;
                     flex-direction: column;
                     gap: 10px;
                 }
             
-                .product-links--variant_spicegems a, .product-links--color_spicegems a, .product-links--commonImage_spicegems a, .product-links--video_spicegems a {
+                .product-links--variant_spicegems a, .product-links--color_spicegems a, .product-links--commonImage_spicegems a, .product-links--template_spicegems a, .product-links--video_spicegems a {
                     font-size: 14px !important;
                     color: #ffffff;
                     transition: all linear 0.2s;
@@ -316,7 +342,7 @@ const SGshopDetails = () => {
                     text-decoration: none !important;
                 }
             
-                .product-links--variant_spicegems a:hover, .product-links--color_spicegems a:hover, .product-links--commonImage_spicegems a:hover, product-links--video_spicegems a:hover {
+                .product-links--variant_spicegems a:hover, .product-links--color_spicegems a:hover, .product-links--commonImage_spicegems a:hover, .product-links--template_spicegems a:hover, product-links--video_spicegems a:hover {
                     color: #ffffff;
                     background-color: #0056b3;
                 }
@@ -428,6 +454,7 @@ const SGshopDetails = () => {
                                 <option value="variants" selected>Products with Variants</option>
                                 <option value="colors">Products with Color Options</option>
                                 <option value="commonImages">Products with Common Images</option>
+                                <option value="template">Products with Template</option>
                                 <option value="video">Products with Video</option>
                             </select>
                             <div class="tab-content-spicegems"></div>
@@ -479,7 +506,7 @@ const SGshopDetails = () => {
                     $("#productFilter").removeClass("shoploadHide");
                     $(".tab-content-spicegems").html(self.loadingSpinner());
 
-                    const { productsWithVariants, productsWithColorOption, productsWithCommonImages } = await self.getEviVariables(abortController.signal);
+                    const { productsWithVariants, productsWithColorOption, productsWithCommonImages } = await self.getEviVariables();
                     self.updateProductLinks("variants", productsWithVariants, productsWithColorOption, productsWithCommonImages);
 
                     $("#productFilter").on("change", (e) => {
@@ -571,6 +598,11 @@ const SGshopDetails = () => {
             } else if (filterType === "commonImages") {
                 const productWithCommonImagesHtml = productsWithCommonImages?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
                 filteredHtml = `<div class="product-links--commonImage_spicegems"><div>Products with common images: ${productsWithCommonImages?.length}</div><div class="links-spicegems">${productWithCommonImagesHtml}</div></div>`;
+            } else if (filterType === "template") {
+                $(".tab-content-spicegems").html(self.loadingSpinner());
+                const productsWithTemplate = await self.getProductsWithTemplate();
+                const productWithTemplateHtml = productsWithTemplate?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
+                filteredHtml = `<div class="product-links--template_spicegems"><div>Products with Template: ${productsWithTemplate?.length}</div><div class="links-spicegems">${productWithTemplateHtml}</div></div>`;
             } else if (filterType === "video") {
                 $(".tab-content-spicegems").html(self.loadingSpinner());
                 const productWithVideo = await self.getProductsWithVideo();
