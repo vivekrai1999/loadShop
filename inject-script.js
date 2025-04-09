@@ -31,14 +31,15 @@ const SGshopDetails = () => {
             window.innerWidth > 1200 && self.setUI();
         },
 
-        getAllProducts: async () => {
+        getAllProducts: async (signal) => {
             let allProducts = [];
             let limit = 250;
             let page = 1;
 
             try {
                 while (true) {
-                    const response = await fetch(`/products.json?limit=${limit}&page=${page}`);
+                    if (signal.aborted) return [];
+                    const response = await fetch(`/products.json?limit=${limit}&page=${page}`, { signal });
                     const data = await response.json();
                     const products = data?.products || [];
 
@@ -52,28 +53,33 @@ const SGshopDetails = () => {
                 }
                 return allProducts;
             } catch (error) {
-                console.error("Error:", error);
-                throw error;
+                if (error.name === "AbortError") {
+                    console.warn(`Fetch aborted`);
+                } else {
+                    console.error("Error fetching product :", error);
+                }
+                return [];
             }
         },
 
-        getEviVariables: async () => {
+        getEviVariables: async (signal) => {
             try {
-                const allProducts = await self.getAllProducts();
+                let allProducts = await self.getAllProducts(signal);
                 const productsWithVariants = allProducts.filter(({ variants, images }) => variants.length > 1 && images.some(({ variant_ids }) => variant_ids.length !== 0));
                 const productsWithColorOption = productsWithVariants.filter(({ options }) => options.some(({ name }) => name.toLowerCase() === "color" || name.toLowerCase() === "colour"));
                 const productsWithCommonImages = productsWithVariants.filter(({ images }) => images?.length > 1 && images[0]?.variant_ids?.length === 0);
                 return { productsWithVariants, productsWithColorOption, productsWithCommonImages };
             } catch (error) {
                 console.error("Error fetching EVI variables:", error);
-                throw error;
+                return {};
             }
         },
 
-        getProductsWithVideo: async () => {
+        getProductsWithVideo: async (signal) => {
             try {
-                const { productsWithVariants } = await self.getEviVariables();
-                const productWithVideos = await Promise.all(productsWithVariants.map(self.checkVideoProduct));
+                const { productsWithVariants } = await self.getEviVariables(signal);
+                if (signal.aborted) return [];
+                const productWithVideos = await Promise.all(productsWithVariants.map((product) => self.checkVideoProduct(product, signal)));
                 const filteredVideos = productWithVideos.filter((product) => product !== null);
                 return filteredVideos;
             } catch (error) {
@@ -82,24 +88,30 @@ const SGshopDetails = () => {
             }
         },
 
-        checkVideoProduct: async (product) => {
+        checkVideoProduct: async (product, signal) => {
             try {
-                const response = await fetch(`/products/${product.handle}.js`);
+                if (signal.aborted) return null;
+                const response = await fetch(`/products/${product.handle}.js`, { signal });
                 const data = await response.json();
                 if (data?.media?.some(({ media_type }) => media_type === "video")) {
                     return product;
                 }
                 return null;
             } catch (error) {
-                console.error("Error fetching product video:", error);
+                if (error.name === "AbortError") {
+                    console.warn(`Fetch aborted`);
+                } else {
+                    console.error("Error fetching product template:", error);
+                }
                 return null;
             }
         },
 
-        getProductsWithTemplate: async () => {
+        getProductsWithTemplate: async (signal) => {
             try {
-                const { productsWithVariants } = await self.getEviVariables();
-                const productWithTemplate = await Promise.all(productsWithVariants.map(self.checkTemplateProduct));
+                const { productsWithVariants } = await self.getEviVariables(signal);
+                if (signal.aborted) return [];
+                const productWithTemplate = await Promise.all(productsWithVariants.map((product) => self.checkTemplateProduct(product, signal)));
                 const filteredTemplate = productWithTemplate.filter((product) => product !== null);
                 return filteredTemplate;
             } catch (error) {
@@ -108,16 +120,21 @@ const SGshopDetails = () => {
             }
         },
 
-        checkTemplateProduct: async (product) => {
+        checkTemplateProduct: async (product, signal) => {
             try {
-                const response = await fetch(`/products/${product.handle}.json`);
+                if (signal.aborted) return null;
+                const response = await fetch(`/products/${product.handle}.json`, { signal });
                 const data = await response.json();
                 if (data?.product?.template_suffix !== null && data?.product?.template_suffix.trim() !== "") {
                     return product;
                 }
                 return null;
             } catch (error) {
-                console.error("Error fetching product template:", error);
+                if (error.name === "AbortError") {
+                    console.warn(`Fetch aborted `);
+                } else {
+                    console.error("Error fetching product template:", error);
+                }
                 return null;
             }
         },
@@ -484,8 +501,11 @@ const SGshopDetails = () => {
 
                 if (abortController) {
                     abortController.abort();
+                    $("#productFilter option").removeAttr("selected");
+                    $("#productFilter option").eq(0).attr("selected", "selected");
                 }
                 abortController = new AbortController();
+                const signal = abortController?.signal;
 
                 if ($(e.currentTarget).hasClass("details-spicegems")) {
                     $("#productFilter").addClass("shoploadHide");
@@ -506,12 +526,12 @@ const SGshopDetails = () => {
                     $("#productFilter").removeClass("shoploadHide");
                     $(".tab-content-spicegems").html(self.loadingSpinner());
 
-                    const { productsWithVariants, productsWithColorOption, productsWithCommonImages } = await self.getEviVariables();
-                    self.updateProductLinks("variants", productsWithVariants, productsWithColorOption, productsWithCommonImages);
+                    const { productsWithVariants, productsWithColorOption, productsWithCommonImages } = await self.getEviVariables(signal);
+                    self.updateProductLinks("variants", productsWithVariants, productsWithColorOption, productsWithCommonImages, signal);
 
                     $("#productFilter").on("change", (e) => {
                         const selectedFilter = e.target.value;
-                        self.updateProductLinks(selectedFilter, productsWithVariants, productsWithColorOption, productsWithCommonImages);
+                        self.updateProductLinks(selectedFilter, productsWithVariants, productsWithColorOption, productsWithCommonImages, signal);
                         $(e.target).find("option").removeAttr("selected");
                         $(e.target).find(`option[value=${selectedFilter}]`).attr("selected", "");
                     });
@@ -586,31 +606,38 @@ const SGshopDetails = () => {
             self.setDraggable();
         },
 
-        updateProductLinks: async (filterType, productsWithVariants, productsWithColorOption, productsWithCommonImages) => {
+        updateProductLinks: async (filterType, productsWithVariants, productsWithColorOption, productsWithCommonImages, signal) => {
             if (!$(".products-spicegems").hasClass("active-spicegems")) return;
             let filteredHtml = "";
             if (filterType === "variants") {
                 const productWithVariantHtml = productsWithVariants?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
                 filteredHtml = `<div class="product-links--variant_spicegems"><div>Variant Wise Images: ${productsWithVariants?.length}</div><div class="links-spicegems">${productWithVariantHtml}</div></div>`;
+                $(".tab-content-spicegems").html(filteredHtml);
             } else if (filterType === "colors") {
                 const productWithColorOptionsHtml = productsWithColorOption?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
                 filteredHtml = `<div class="product-links--color_spicegems"><div>Color Options: ${productsWithColorOption?.length}</div><div class="links-spicegems">${productWithColorOptionsHtml}</div></div>`;
+                $(".tab-content-spicegems").html(filteredHtml);
             } else if (filterType === "commonImages") {
                 const productWithCommonImagesHtml = productsWithCommonImages?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
                 filteredHtml = `<div class="product-links--commonImage_spicegems"><div>Products with common images: ${productsWithCommonImages?.length}</div><div class="links-spicegems">${productWithCommonImagesHtml}</div></div>`;
+                $(".tab-content-spicegems").html(filteredHtml);
             } else if (filterType === "template") {
                 $(".tab-content-spicegems").html(self.loadingSpinner());
-                const productsWithTemplate = await self.getProductsWithTemplate();
-                const productWithTemplateHtml = productsWithTemplate?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
-                filteredHtml = `<div class="product-links--template_spicegems"><div>Products with Template: ${productsWithTemplate?.length}</div><div class="links-spicegems">${productWithTemplateHtml}</div></div>`;
+                const productsWithTemplate = await self.getProductsWithTemplate(signal);
+                if (!signal.aborted) {
+                    const productWithTemplateHtml = productsWithTemplate?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
+                    filteredHtml = `<div class="product-links--template_spicegems"><div>Products with Template: ${productsWithTemplate?.length}</div><div class="links-spicegems">${productWithTemplateHtml}</div></div>`;
+                    $(".tab-content-spicegems").html(filteredHtml);
+                }
             } else if (filterType === "video") {
                 $(".tab-content-spicegems").html(self.loadingSpinner());
-                const productWithVideo = await self.getProductsWithVideo();
-                const productWithVideoHtml = productWithVideo?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
-                filteredHtml = `<div class="product-links--video_spicegems"><div>Products with with video: ${productWithVideo?.length}</div><div class="links-spicegems">${productWithVideoHtml}</div></div>`;
+                const productWithVideo = await self.getProductsWithVideo(signal);
+                if (!signal.aborted) {
+                    const productWithVideoHtml = productWithVideo?.map(({ handle }) => `<a target="_blank" href="/products/${handle}">${handle.length > 30 ? handle.slice(0, 20).concat("...") : handle} ↗</a>`).join("");
+                    filteredHtml = `<div class="product-links--video_spicegems"><div>Products with video: ${productWithVideo?.length}</div><div class="links-spicegems">${productWithVideoHtml}</div></div>`;
+                    $(".tab-content-spicegems").html(filteredHtml);
+                }
             }
-
-            $(".tab-content-spicegems").html(filteredHtml);
         },
 
         generateDetailsTable: () => {
