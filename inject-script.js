@@ -35,6 +35,7 @@ const SGshopDetails = () => {
             let allProducts = [];
             let limit = 250;
             let page = 1;
+            let fetchedproducts = 0;
 
             try {
                 while (true) {
@@ -43,14 +44,18 @@ const SGshopDetails = () => {
                     const data = await response.json();
                     const products = data?.products || [];
 
+                    $(".sgPageCount").html(`Page Fetched: ${page}`);
+                    $(".sgProductCount").html(`Products Fetched: ${fetchedproducts}`);
+
                     allProducts = [...allProducts, ...products];
 
+                    fetchedproducts += products.length;
+
                     if (products.length < limit) {
+                        $(".sgProductCount").html(`Products Fetched: ${fetchedproducts}`);
                         break;
                     }
 
-                    $(".sgPageCount").html(`Page Fetched: ${page}`);
-                    $(".sgProductCount").html(`Products Fetched: ${page * limit}`);
                     page++;
                 }
                 return allProducts;
@@ -533,6 +538,7 @@ const SGshopDetails = () => {
                 if ($(e.currentTarget).hasClass("products-spicegems")) {
                     $("#productFilter").removeClass("shoploadHide");
                     $("#loadedProducts").removeClass("shoploadHide");
+                    $(".sgPageCount, .sgProductCount").html("");
 
                     $(".tab-content-spicegems").html(self.loadingSpinner());
 
