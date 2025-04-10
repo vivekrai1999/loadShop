@@ -49,6 +49,8 @@ const SGshopDetails = () => {
                         break;
                     }
 
+                    $(".sgPageCount").html(`Page Fetched: ${page}`);
+                    $(".sgProductCount").html(`Products Fetched: ${page * limit}`);
                     page++;
                 }
                 return allProducts;
@@ -467,13 +469,17 @@ const SGshopDetails = () => {
                                 <div class="tab-spicegems loadScript-spicegems"><p class="tab-heading-spicegems">LoadScript</p></div>
                             </div>
                         <div class="tab-container-spicegems">
-                            <select id="productFilter" class="shoploadHide" style="color: #000; background-color: #ffffff; width: 100%; padding: 10px 5px; border-radius: 5px; margin-top: 10px; font-size: 12px">
+                            <select id="productFilter" class="shoploadHide" style="color: #000; background-color: #ffffff; width: 100%; padding: 10px 5px; border-radius: 5px; margin: 10px 0px; font-size: 12px">
                                 <option value="variants" selected>Products with Variants</option>
                                 <option value="colors">Products with Color Options</option>
                                 <option value="commonImages">Products with Common Images</option>
                                 <option value="template">Products with Template</option>
                                 <option value="video">Products with Video</option>
                             </select>
+                            <div id="loadedProducts" class="shoploadHide" style="display: flex; align-items: center; justify-content: space-between">
+                                <span style="color: #ffffff" class="sgPageCount"></span>
+                                <span style="color: #ffffff" class="sgProductCount"></span>
+                            </div>
                             <div class="tab-content-spicegems"></div>
                         </div>
                     </div>
@@ -509,6 +515,8 @@ const SGshopDetails = () => {
 
                 if ($(e.currentTarget).hasClass("details-spicegems")) {
                     $("#productFilter").addClass("shoploadHide");
+                    $("#loadedProducts").addClass("shoploadHide");
+
                     const details = self.generateDetailsTable();
                     $(".tab-content-spicegems").html(details);
 
@@ -524,6 +532,8 @@ const SGshopDetails = () => {
 
                 if ($(e.currentTarget).hasClass("products-spicegems")) {
                     $("#productFilter").removeClass("shoploadHide");
+                    $("#loadedProducts").removeClass("shoploadHide");
+
                     $(".tab-content-spicegems").html(self.loadingSpinner());
 
                     const { productsWithVariants, productsWithColorOption, productsWithCommonImages } = await self.getEviVariables(signal);
@@ -539,6 +549,8 @@ const SGshopDetails = () => {
 
                 if ($(e.currentTarget).hasClass("loadScript-spicegems")) {
                     $("#productFilter").addClass("shoploadHide");
+                    $("#loadedProducts").addClass("shoploadHide");
+
                     $(".tab-content-spicegems").html(self.filePickerHtml());
 
                     $("#executeFile-spicegems").on("click", () => {
